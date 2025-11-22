@@ -23,7 +23,7 @@ import "./style/App.css";
 const App = () => {
   return (
     <div className="App">
-      <Router>
+      <Router basename="/SSE-frontend">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/catalogo" element={<Catalogo />} />
