@@ -1,2 +1,1 @@
-export const API_BASE = "https://sse-backend-1e76.onrender.com";
-
+export const API_BASE = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
