@@ -44,11 +44,16 @@ if [ ! -d "node_modules" ]; then
   exit 1
 fi
 
+# Create output directory
+OUTPUT_DIR="energy-frontend-results"
+mkdir -p "$OUTPUT_DIR"
+
 echo "---------------------------------------------"
 echo "Using energibridge: $ENERGIBRIDGE_BIN"
 echo "Using npm start"
 echo "Frontend directory: $(pwd)"
 echo "Execution time:     $MEASURE_TIME seconds"
+echo "Output directory:   $OUTPUT_DIR"
 echo "---------------------------------------------"
 echo ""
 
@@ -59,11 +64,20 @@ NPM_PID=$!
 # Wait 0.5 seconds so React dev server forks its child processes
 sleep 0.5
 
-# Measure energy consumption
-"$ENERGIBRIDGE_BIN" --summary -m "$MEASURE_TIME" bash -c 'sleep infinity'
+# Generate timestamped CSV filename
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+OUTPUT_FILE="$OUTPUT_DIR/energy-frontend-$TIMESTAMP.csv"
+
+# Measure energy consumption and save output to CSV
+"$ENERGIBRIDGE_BIN" --summary -o "$OUTPUT_FILE" -m "$MEASURE_TIME" bash -c 'sleep infinity'
 
 # Kill npm and all its child processes
 pkill -TERM -P "$NPM_PID" 2>/dev/null
 kill -TERM "$NPM_PID" 2>/dev/null
 pkill node 2>/dev/null
+
+echo ""
+echo "---------------------------------------------"
+echo " Energy report saved: $OUTPUT_FILE"
+echo "---------------------------------------------"
 
